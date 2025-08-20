@@ -102,7 +102,7 @@ void File::New(const v8::FunctionCallbackInfo<v8::Value>& args) {
 }
 
 void File::Sync(const v8::FunctionCallbackInfo<v8::Value>& args) {
-    File* obj = node::ObjectWrap::Unwrap<File>(args.Holder());
+    File* obj = node::ObjectWrap::Unwrap<File>(args.This());
     int retval = nc_sync(obj->id);
     if (retval != NC_NOERR) {
         throw_netcdf_error(args.GetIsolate(), retval);
@@ -110,7 +110,7 @@ void File::Sync(const v8::FunctionCallbackInfo<v8::Value>& args) {
 }
 
 void File::Close(const v8::FunctionCallbackInfo<v8::Value>& args) {
-    File* obj = node::ObjectWrap::Unwrap<File>(args.Holder());
+    File* obj = node::ObjectWrap::Unwrap<File>(args.This());
     int retval = nc_close(obj->id);
     if (retval != NC_NOERR) {
         throw_netcdf_error(args.GetIsolate(), retval);

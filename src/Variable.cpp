@@ -57,22 +57,38 @@ void Variable::Init(v8::Local<v8::Object> exports) {
     NODE_SET_PROTOTYPE_METHOD(tpl, "writeStridedSlice", Variable::WriteStridedSlice);
     NODE_SET_PROTOTYPE_METHOD(tpl, "addAttribute", Variable::AddAttribute);
     NODE_SET_PROTOTYPE_METHOD(tpl, "inspect", Variable::Inspect);
-    tpl->InstanceTemplate()->SetAccessor(v8::String::NewFromUtf8(isolate, "id", v8::NewStringType::kNormal).ToLocalChecked(), Variable::GetId);
-    tpl->InstanceTemplate()->SetAccessor(v8::String::NewFromUtf8(isolate, "type", v8::NewStringType::kNormal).ToLocalChecked(), Variable::GetType);
-    tpl->InstanceTemplate()->SetAccessor(v8::String::NewFromUtf8(isolate, "dimensions", v8::NewStringType::kNormal).ToLocalChecked(), Variable::GetDimensions);
-    tpl->InstanceTemplate()->SetAccessor(v8::String::NewFromUtf8(isolate, "attributes", v8::NewStringType::kNormal).ToLocalChecked(), Variable::GetAttributes);
-    tpl->InstanceTemplate()->SetAccessor(v8::String::NewFromUtf8(isolate, "name", v8::NewStringType::kNormal).ToLocalChecked(), Variable::GetName, Variable::SetName);
-    tpl->InstanceTemplate()->SetAccessor(v8::String::NewFromUtf8(isolate, "endianness", v8::NewStringType::kNormal).ToLocalChecked(), Variable::GetEndianness, Variable::SetEndianness);
-    tpl->InstanceTemplate()->SetAccessor(v8::String::NewFromUtf8(isolate, "checksummode", v8::NewStringType::kNormal).ToLocalChecked(), Variable::GetChecksumMode, Variable::SetChecksumMode);
-    tpl->InstanceTemplate()->SetAccessor(v8::String::NewFromUtf8(isolate, "chunkmode", v8::NewStringType::kNormal).ToLocalChecked(), Variable::GetChunkMode, Variable::SetChunkMode);
-    tpl->InstanceTemplate()->SetAccessor(v8::String::NewFromUtf8(isolate, "chunksizes", v8::NewStringType::kNormal).ToLocalChecked(), Variable::GetChunkSizes, Variable::SetChunkSizes);
-    tpl->InstanceTemplate()->SetAccessor(v8::String::NewFromUtf8(isolate, "fillmode", v8::NewStringType::kNormal).ToLocalChecked(), Variable::GetFillMode, Variable::SetFillMode);
-    tpl->InstanceTemplate()->SetAccessor(v8::String::NewFromUtf8(isolate, "fillvalue", v8::NewStringType::kNormal).ToLocalChecked(), Variable::GetFillValue, Variable::SetFillValue);
-    tpl->InstanceTemplate()->SetAccessor(v8::String::NewFromUtf8(isolate, "compressionshuffle", v8::NewStringType::kNormal).ToLocalChecked(), Variable::GetCompressionShuffle,
-                                         Variable::SetCompressionShuffle);
-    tpl->InstanceTemplate()->SetAccessor(v8::String::NewFromUtf8(isolate, "compressiondeflate", v8::NewStringType::kNormal).ToLocalChecked(), Variable::GetCompressionDeflate,
-                                         Variable::SetCompressionDeflate);
-    tpl->InstanceTemplate()->SetAccessor(v8::String::NewFromUtf8(isolate, "compressionlevel", v8::NewStringType::kNormal).ToLocalChecked(), Variable::GetCompressionLevel, Variable::SetCompressionLevel);
+
+    FN_GETTER(Variable, Id)
+    FN_GETTER(Variable, Type)
+    FN_GETTER(Variable, Dimensions)
+    FN_GETTER(Variable, Attributes)
+    FN_GETTER_AND_SETTER(Variable, Name)
+    FN_GETTER_AND_SETTER(Variable, Endianness)
+    FN_GETTER_AND_SETTER(Variable, ChecksumMode)
+    FN_GETTER_AND_SETTER(Variable, ChunkMode)
+    FN_GETTER_AND_SETTER(Variable, ChunkSizes)
+    FN_GETTER_AND_SETTER(Variable, FillMode)
+    FN_GETTER_AND_SETTER(Variable, FillValue)
+    FN_GETTER_AND_SETTER(Variable, CompressionShuffle)
+    FN_GETTER_AND_SETTER(Variable, CompressionDeflate)
+    FN_GETTER_AND_SETTER(Variable, CompressionLevel)
+
+    tpl->InstanceTemplate()->SetAccessorProperty(v8::String::NewFromUtf8(isolate, "id", v8::NewStringType::kNormal).ToLocalChecked(), getter_Id);
+    tpl->InstanceTemplate()->SetAccessorProperty(v8::String::NewFromUtf8(isolate, "type", v8::NewStringType::kNormal).ToLocalChecked(), getter_Type);
+    tpl->InstanceTemplate()->SetAccessorProperty(v8::String::NewFromUtf8(isolate, "dimensions", v8::NewStringType::kNormal).ToLocalChecked(), getter_Dimensions);
+    tpl->InstanceTemplate()->SetAccessorProperty(v8::String::NewFromUtf8(isolate, "attributes", v8::NewStringType::kNormal).ToLocalChecked(), getter_Attributes);
+    tpl->InstanceTemplate()->SetAccessorProperty(v8::String::NewFromUtf8(isolate, "name", v8::NewStringType::kNormal).ToLocalChecked(), getter_Name, setter_Name);
+    tpl->InstanceTemplate()->SetAccessorProperty(v8::String::NewFromUtf8(isolate, "endianness", v8::NewStringType::kNormal).ToLocalChecked(), getter_Endianness, setter_Endianness);
+    tpl->InstanceTemplate()->SetAccessorProperty(v8::String::NewFromUtf8(isolate, "checksummode", v8::NewStringType::kNormal).ToLocalChecked(), getter_ChecksumMode, setter_ChecksumMode);
+    tpl->InstanceTemplate()->SetAccessorProperty(v8::String::NewFromUtf8(isolate, "chunkmode", v8::NewStringType::kNormal).ToLocalChecked(), getter_ChunkMode, setter_ChunkMode);
+    tpl->InstanceTemplate()->SetAccessorProperty(v8::String::NewFromUtf8(isolate, "chunksizes", v8::NewStringType::kNormal).ToLocalChecked(), getter_ChunkSizes, setter_ChunkSizes);
+    tpl->InstanceTemplate()->SetAccessorProperty(v8::String::NewFromUtf8(isolate, "fillmode", v8::NewStringType::kNormal).ToLocalChecked(), getter_FillMode, setter_FillMode);
+    tpl->InstanceTemplate()->SetAccessorProperty(v8::String::NewFromUtf8(isolate, "fillvalue", v8::NewStringType::kNormal).ToLocalChecked(), getter_FillValue, setter_FillValue);
+    tpl->InstanceTemplate()->SetAccessorProperty(v8::String::NewFromUtf8(isolate, "compressionshuffle", v8::NewStringType::kNormal).ToLocalChecked(), getter_CompressionShuffle,
+        setter_CompressionShuffle);
+    tpl->InstanceTemplate()->SetAccessorProperty(v8::String::NewFromUtf8(isolate, "compressiondeflate", v8::NewStringType::kNormal).ToLocalChecked(), getter_CompressionDeflate,
+        setter_CompressionDeflate);
+    tpl->InstanceTemplate()->SetAccessorProperty(v8::String::NewFromUtf8(isolate, "compressionlevel", v8::NewStringType::kNormal).ToLocalChecked(), getter_CompressionLevel, setter_CompressionLevel);
     constructor.Reset(isolate, tpl->GetFunction(isolate->GetCurrentContext()).ToLocalChecked());
 }
 
@@ -87,7 +103,7 @@ bool Variable::get_name(char* name) const {
 
 void Variable::Write(const v8::FunctionCallbackInfo<v8::Value>& args) {
     v8::Isolate* isolate = args.GetIsolate();
-    Variable* obj = node::ObjectWrap::Unwrap<Variable>(args.Holder());
+    Variable* obj = node::ObjectWrap::Unwrap<Variable>(args.This());
     if (args.Length() != obj->ndims + 1) {
         isolate->ThrowException(v8::Exception::TypeError(v8::String::NewFromUtf8(isolate, "Wrong number of arguments", v8::NewStringType::kNormal).ToLocalChecked()));
         return;
@@ -148,7 +164,7 @@ void Variable::Write(const v8::FunctionCallbackInfo<v8::Value>& args) {
 
 void Variable::WriteSlice(const v8::FunctionCallbackInfo<v8::Value>& args) {
     v8::Isolate* isolate = args.GetIsolate();
-    Variable* obj = node::ObjectWrap::Unwrap<Variable>(args.Holder());
+    Variable* obj = node::ObjectWrap::Unwrap<Variable>(args.This());
     if (args.Length() != 2 * obj->ndims + 1) {
         isolate->ThrowException(v8::Exception::TypeError(v8::String::NewFromUtf8(isolate, "Wrong number of arguments", v8::NewStringType::kNormal).ToLocalChecked()));
         return;
@@ -213,7 +229,7 @@ void Variable::WriteSlice(const v8::FunctionCallbackInfo<v8::Value>& args) {
         delete[] size;
         return;
     }
-    int retval = nc_put_vara(obj->parent_id, obj->id, pos, size, val->Buffer()->GetContents().Data());
+    int retval = nc_put_vara(obj->parent_id, obj->id, pos, size, val->Buffer()->Data());
     if (retval != NC_NOERR) {
         throw_netcdf_error(isolate, retval);
     }
@@ -223,7 +239,7 @@ void Variable::WriteSlice(const v8::FunctionCallbackInfo<v8::Value>& args) {
 
 void Variable::WriteStridedSlice(const v8::FunctionCallbackInfo<v8::Value>& args) {
     v8::Isolate* isolate = args.GetIsolate();
-    Variable* obj = node::ObjectWrap::Unwrap<Variable>(args.Holder());
+    Variable* obj = node::ObjectWrap::Unwrap<Variable>(args.This());
     if (args.Length() != 3 * obj->ndims + 1) {
         isolate->ThrowException(v8::Exception::TypeError(v8::String::NewFromUtf8(isolate, "Wrong number of arguments", v8::NewStringType::kNormal).ToLocalChecked()));
         return;
@@ -293,7 +309,7 @@ void Variable::WriteStridedSlice(const v8::FunctionCallbackInfo<v8::Value>& args
         delete[] stride;
         return;
     }
-    int retval = nc_put_vars(obj->parent_id, obj->id, pos, size, stride, val->Buffer()->GetContents().Data());
+    int retval = nc_put_vars(obj->parent_id, obj->id, pos, size, stride, val->Buffer()->Data());
     if (retval != NC_NOERR) {
         throw_netcdf_error(isolate, retval);
     }
@@ -304,7 +320,7 @@ void Variable::WriteStridedSlice(const v8::FunctionCallbackInfo<v8::Value>& args
 
 void Variable::Read(const v8::FunctionCallbackInfo<v8::Value>& args) {
     v8::Isolate* isolate = args.GetIsolate();
-    Variable* obj = node::ObjectWrap::Unwrap<Variable>(args.Holder());
+    Variable* obj = node::ObjectWrap::Unwrap<Variable>(args.This());
     if (args.Length() != obj->ndims) {
         isolate->ThrowException(v8::Exception::TypeError(v8::String::NewFromUtf8(isolate, "Wrong number of arguments", v8::NewStringType::kNormal).ToLocalChecked()));
         return;
@@ -380,7 +396,7 @@ void Variable::Read(const v8::FunctionCallbackInfo<v8::Value>& args) {
 
 void Variable::ReadSlice(const v8::FunctionCallbackInfo<v8::Value>& args) {
     v8::Isolate* isolate = args.GetIsolate();
-    Variable* obj = node::ObjectWrap::Unwrap<Variable>(args.Holder());
+    Variable* obj = node::ObjectWrap::Unwrap<Variable>(args.This());
     if (args.Length() != 2 * obj->ndims) {
         isolate->ThrowException(v8::Exception::TypeError(v8::String::NewFromUtf8(isolate, "Wrong number of arguments", v8::NewStringType::kNormal).ToLocalChecked()));
         return;
@@ -400,7 +416,7 @@ void Variable::ReadSlice(const v8::FunctionCallbackInfo<v8::Value>& args) {
         total_size *= s;
     }
     v8::Local<v8::ArrayBuffer> buffer = v8::ArrayBuffer::New(isolate, total_size * type_sizes[obj->type]);
-    int retval = nc_get_vara(obj->parent_id, obj->id, pos, size, buffer->GetContents().Data());
+    int retval = nc_get_vara(obj->parent_id, obj->id, pos, size, buffer->Data());
     if (retval != NC_NOERR) {
         throw_netcdf_error(isolate, retval);
         delete[] pos;
@@ -448,7 +464,7 @@ void Variable::ReadSlice(const v8::FunctionCallbackInfo<v8::Value>& args) {
 
 void Variable::ReadStridedSlice(const v8::FunctionCallbackInfo<v8::Value>& args) {
     v8::Isolate* isolate = args.GetIsolate();
-    Variable* obj = node::ObjectWrap::Unwrap<Variable>(args.Holder());
+    Variable* obj = node::ObjectWrap::Unwrap<Variable>(args.This());
     if (args.Length() != 3 * obj->ndims) {
         isolate->ThrowException(v8::Exception::TypeError(v8::String::NewFromUtf8(isolate, "Wrong number of arguments", v8::NewStringType::kNormal).ToLocalChecked()));
         return;
@@ -470,7 +486,7 @@ void Variable::ReadStridedSlice(const v8::FunctionCallbackInfo<v8::Value>& args)
         stride[i] = static_cast<ptrdiff_t>(args[3 * i + 2]->IntegerValue(isolate->GetCurrentContext()).ToChecked());
     }
     v8::Local<v8::ArrayBuffer> buffer = v8::ArrayBuffer::New(isolate, total_size * type_sizes[obj->type]);
-    int retval = nc_get_vars(obj->parent_id, obj->id, pos, size, stride, buffer->GetContents().Data());
+    int retval = nc_get_vars(obj->parent_id, obj->id, pos, size, stride, buffer->Data());
     if (retval != NC_NOERR) {
         throw_netcdf_error(isolate, retval);
         delete[] pos;
@@ -515,7 +531,7 @@ void Variable::ReadStridedSlice(const v8::FunctionCallbackInfo<v8::Value>& args)
 
 void Variable::AddAttribute(const v8::FunctionCallbackInfo<v8::Value>& args) {
     v8::Isolate* isolate = args.GetIsolate();
-    Variable* obj = node::ObjectWrap::Unwrap<Variable>(args.Holder());
+    Variable* obj = node::ObjectWrap::Unwrap<Variable>(args.This());
     if (args.Length() < 3) {
         isolate->ThrowException(v8::Exception::TypeError(v8::String::NewFromUtf8(isolate, "Wrong number of arguments", v8::NewStringType::kNormal).ToLocalChecked()));
         return;
@@ -540,15 +556,15 @@ void Variable::AddAttribute(const v8::FunctionCallbackInfo<v8::Value>& args) {
     args.GetReturnValue().Set(res->handle());
 }
 
-void Variable::GetId(v8::Local<v8::String> property, const v8::PropertyCallbackInfo<v8::Value>& info) {
+void Variable::GetId(const v8::FunctionCallbackInfo<v8::Value>& info) {
     v8::Isolate* isolate = info.GetIsolate();
-    Variable* obj = node::ObjectWrap::Unwrap<Variable>(info.Holder());
+    Variable* obj = node::ObjectWrap::Unwrap<Variable>(info.This());
     info.GetReturnValue().Set(v8::Integer::New(isolate, obj->id));
 }
 
-void Variable::GetDimensions(v8::Local<v8::String> property, const v8::PropertyCallbackInfo<v8::Value>& info) {
+void Variable::GetDimensions(const v8::FunctionCallbackInfo<v8::Value>& info) {
     v8::Isolate* isolate = info.GetIsolate();
-    Variable* obj = node::ObjectWrap::Unwrap<Variable>(info.Holder());
+    Variable* obj = node::ObjectWrap::Unwrap<Variable>(info.This());
     int* dim_ids = new int[obj->ndims];
     int retval = nc_inq_vardimid(obj->parent_id, obj->id, dim_ids);
     if (retval != NC_NOERR) {
@@ -565,9 +581,9 @@ void Variable::GetDimensions(v8::Local<v8::String> property, const v8::PropertyC
     delete[] dim_ids;
 }
 
-void Variable::GetAttributes(v8::Local<v8::String> property, const v8::PropertyCallbackInfo<v8::Value>& info) {
+void Variable::GetAttributes(const v8::FunctionCallbackInfo<v8::Value>& info) {
     v8::Isolate* isolate = info.GetIsolate();
-    Variable* obj = node::ObjectWrap::Unwrap<Variable>(info.Holder());
+    Variable* obj = node::ObjectWrap::Unwrap<Variable>(info.This());
     int natts;
     int retval = nc_inq_varnatts(obj->parent_id, obj->id, &natts);
     if (retval != NC_NOERR) {
@@ -588,9 +604,9 @@ void Variable::GetAttributes(v8::Local<v8::String> property, const v8::PropertyC
     info.GetReturnValue().Set(result);
 }
 
-void Variable::GetType(v8::Local<v8::String> property, const v8::PropertyCallbackInfo<v8::Value>& info) {
+void Variable::GetType(const v8::FunctionCallbackInfo<v8::Value>& info) {
     v8::Isolate* isolate = info.GetIsolate();
-    Variable* obj = node::ObjectWrap::Unwrap<Variable>(info.Holder());
+    Variable* obj = node::ObjectWrap::Unwrap<Variable>(info.This());
     const char* res;
     if (obj->type < NC_BYTE || obj->type > NC_UINT) {
         res = "Variable type not supported yet";
@@ -600,18 +616,19 @@ void Variable::GetType(v8::Local<v8::String> property, const v8::PropertyCallbac
     info.GetReturnValue().Set(v8::String::NewFromUtf8(isolate, res, v8::NewStringType::kNormal).ToLocalChecked());
 }
 
-void Variable::GetName(v8::Local<v8::String> property, const v8::PropertyCallbackInfo<v8::Value>& info) {
+void Variable::GetName(const v8::FunctionCallbackInfo<v8::Value>& info) {
     v8::Isolate* isolate = info.GetIsolate();
-    Variable* obj = node::ObjectWrap::Unwrap<Variable>(info.Holder());
+    Variable* obj = node::ObjectWrap::Unwrap<Variable>(info.This());
     char name[NC_MAX_NAME + 1];
     if (obj->get_name(name)) {
         info.GetReturnValue().Set(v8::String::NewFromUtf8(isolate, name, v8::NewStringType::kNormal).ToLocalChecked());
     }
 }
 
-void Variable::SetName(v8::Local<v8::String> property, v8::Local<v8::Value> val, const v8::PropertyCallbackInfo<void>& info) {
+void Variable::SetName(const v8::FunctionCallbackInfo<v8::Value>& info) {
     v8::Isolate* isolate = info.GetIsolate();
-    Variable* obj = node::ObjectWrap::Unwrap<Variable>(info.Holder());
+    Variable* obj = node::ObjectWrap::Unwrap<Variable>(info.This());
+    v8::Local<v8::Value> val = info[0];
     v8::String::Utf8Value new_name_(
 #if NODE_MAJOR_VERSION >= 8
         isolate,
@@ -624,9 +641,9 @@ void Variable::SetName(v8::Local<v8::String> property, v8::Local<v8::Value> val,
     }
 }
 
-void Variable::GetEndianness(v8::Local<v8::String> property, const v8::PropertyCallbackInfo<v8::Value>& info) {
+void Variable::GetEndianness(const v8::FunctionCallbackInfo<v8::Value>& info) {
     v8::Isolate* isolate = info.GetIsolate();
-    Variable* obj = node::ObjectWrap::Unwrap<Variable>(info.Holder());
+    Variable* obj = node::ObjectWrap::Unwrap<Variable>(info.This());
     int v;
     int retval = nc_inq_var_endian(obj->parent_id, obj->id, &v);
     if (retval != NC_NOERR) {
@@ -651,9 +668,10 @@ void Variable::GetEndianness(v8::Local<v8::String> property, const v8::PropertyC
     info.GetReturnValue().Set(v8::String::NewFromUtf8(isolate, res, v8::NewStringType::kNormal).ToLocalChecked());
 }
 
-void Variable::SetEndianness(v8::Local<v8::String> property, v8::Local<v8::Value> val, const v8::PropertyCallbackInfo<void>& info) {
+void Variable::SetEndianness(const v8::FunctionCallbackInfo<v8::Value>& info) {
     v8::Isolate* isolate = info.GetIsolate();
-    Variable* obj = node::ObjectWrap::Unwrap<Variable>(info.Holder());
+    Variable* obj = node::ObjectWrap::Unwrap<Variable>(info.This());
+    v8::Local<v8::Value> val = info[0];
     std::string arg = *v8::String::Utf8Value(
 #if NODE_MAJOR_VERSION >= 8
         isolate,
@@ -677,9 +695,9 @@ void Variable::SetEndianness(v8::Local<v8::String> property, v8::Local<v8::Value
     }
 }
 
-void Variable::GetChecksumMode(v8::Local<v8::String> property, const v8::PropertyCallbackInfo<v8::Value>& info) {
+void Variable::GetChecksumMode(const v8::FunctionCallbackInfo<v8::Value>& info) {
     v8::Isolate* isolate = info.GetIsolate();
-    Variable* obj = node::ObjectWrap::Unwrap<Variable>(info.Holder());
+    Variable* obj = node::ObjectWrap::Unwrap<Variable>(info.This());
     int v;
     int retval = nc_inq_var_fletcher32(obj->parent_id, obj->id, &v);
     if (retval != NC_NOERR) {
@@ -701,9 +719,10 @@ void Variable::GetChecksumMode(v8::Local<v8::String> property, const v8::Propert
     info.GetReturnValue().Set(v8::String::NewFromUtf8(isolate, res, v8::NewStringType::kNormal).ToLocalChecked());
 }
 
-void Variable::SetChecksumMode(v8::Local<v8::String> property, v8::Local<v8::Value> val, const v8::PropertyCallbackInfo<void>& info) {
+void Variable::SetChecksumMode(const v8::FunctionCallbackInfo<v8::Value>& info) {
     v8::Isolate* isolate = info.GetIsolate();
-    Variable* obj = node::ObjectWrap::Unwrap<Variable>(info.Holder());
+    Variable* obj = node::ObjectWrap::Unwrap<Variable>(info.This());
+    v8::Local<v8::Value> val = info[0];
     std::string arg = *v8::String::Utf8Value(
 #if NODE_MAJOR_VERSION >= 8
         isolate,
@@ -725,9 +744,9 @@ void Variable::SetChecksumMode(v8::Local<v8::String> property, v8::Local<v8::Val
     }
 }
 
-void Variable::GetChunkMode(v8::Local<v8::String> property, const v8::PropertyCallbackInfo<v8::Value>& info) {
+void Variable::GetChunkMode(const v8::FunctionCallbackInfo<v8::Value>& info) {
     v8::Isolate* isolate = info.GetIsolate();
-    Variable* obj = node::ObjectWrap::Unwrap<Variable>(info.Holder());
+    Variable* obj = node::ObjectWrap::Unwrap<Variable>(info.This());
     int v;
     int retval = nc_inq_var_chunking(obj->parent_id, obj->id, &v, NULL);
     if (retval != NC_NOERR) {
@@ -749,9 +768,10 @@ void Variable::GetChunkMode(v8::Local<v8::String> property, const v8::PropertyCa
     info.GetReturnValue().Set(v8::String::NewFromUtf8(isolate, res, v8::NewStringType::kNormal).ToLocalChecked());
 }
 
-void Variable::SetChunkMode(v8::Local<v8::String> property, v8::Local<v8::Value> val, const v8::PropertyCallbackInfo<void>& info) {
+void Variable::SetChunkMode(const v8::FunctionCallbackInfo<v8::Value>& info) {
     v8::Isolate* isolate = info.GetIsolate();
-    Variable* obj = node::ObjectWrap::Unwrap<Variable>(info.Holder());
+    Variable* obj = node::ObjectWrap::Unwrap<Variable>(info.This());
+    v8::Local<v8::Value> val = info[0];
     std::string arg = *v8::String::Utf8Value(
 #if NODE_MAJOR_VERSION >= 8
         isolate,
@@ -786,9 +806,9 @@ void Variable::SetChunkMode(v8::Local<v8::String> property, v8::Local<v8::Value>
     delete[] sizes;
 }
 
-void Variable::GetChunkSizes(v8::Local<v8::String> property, const v8::PropertyCallbackInfo<v8::Value>& info) {
+void Variable::GetChunkSizes(const v8::FunctionCallbackInfo<v8::Value>& info) {
     v8::Isolate* isolate = info.GetIsolate();
-    Variable* obj = node::ObjectWrap::Unwrap<Variable>(info.Holder());
+    Variable* obj = node::ObjectWrap::Unwrap<Variable>(info.This());
     size_t* sizes = new size_t[obj->ndims];
     int retval = nc_inq_var_chunking(obj->parent_id, obj->id, NULL, sizes);
     if (retval != NC_NOERR) {
@@ -804,9 +824,10 @@ void Variable::GetChunkSizes(v8::Local<v8::String> property, const v8::PropertyC
     delete[] sizes;
 }
 
-void Variable::SetChunkSizes(v8::Local<v8::String> property, v8::Local<v8::Value> val, const v8::PropertyCallbackInfo<void>& info) {
+void Variable::SetChunkSizes(const v8::FunctionCallbackInfo<v8::Value>& info) {
     v8::Isolate* isolate = info.GetIsolate();
-    Variable* obj = node::ObjectWrap::Unwrap<Variable>(info.Holder());
+    Variable* obj = node::ObjectWrap::Unwrap<Variable>(info.This());
+    v8::Local<v8::Value> val = info[0];
     if (!val->IsArray()) {
         isolate->ThrowException(v8::Exception::TypeError(v8::String::NewFromUtf8(isolate, "Expecting an array", v8::NewStringType::kNormal).ToLocalChecked()));
         return;
@@ -833,9 +854,9 @@ void Variable::SetChunkSizes(v8::Local<v8::String> property, v8::Local<v8::Value
     delete[] sizes;
 }
 
-void Variable::GetFillMode(v8::Local<v8::String> property, const v8::PropertyCallbackInfo<v8::Value>& info) {
+void Variable::GetFillMode(const v8::FunctionCallbackInfo<v8::Value>& info) {
     v8::Isolate* isolate = info.GetIsolate();
-    Variable* obj = node::ObjectWrap::Unwrap<Variable>(info.Holder());
+    Variable* obj = node::ObjectWrap::Unwrap<Variable>(info.This());
     int v;
     int retval = nc_inq_var_fill(obj->parent_id, obj->id, &v, NULL);
     if (retval != NC_NOERR) {
@@ -845,9 +866,10 @@ void Variable::GetFillMode(v8::Local<v8::String> property, const v8::PropertyCal
     info.GetReturnValue().Set(v8::Boolean::New(isolate, v == 1));
 }
 
-void Variable::SetFillMode(v8::Local<v8::String> property, v8::Local<v8::Value> val, const v8::PropertyCallbackInfo<void>& info) {
+void Variable::SetFillMode(const v8::FunctionCallbackInfo<v8::Value>& info) {
     v8::Isolate* isolate = info.GetIsolate();
-    Variable* obj = node::ObjectWrap::Unwrap<Variable>(info.Holder());
+    Variable* obj = node::ObjectWrap::Unwrap<Variable>(info.This());
+    v8::Local<v8::Value> val = info[0];
     if (!val->IsBoolean()) {
         isolate->ThrowException(v8::Exception::TypeError(v8::String::NewFromUtf8(isolate, "Expecting a boolean", v8::NewStringType::kNormal).ToLocalChecked()));
         return;
@@ -875,9 +897,9 @@ void Variable::SetFillMode(v8::Local<v8::String> property, v8::Local<v8::Value> 
     delete[] value;
 }
 
-void Variable::GetFillValue(v8::Local<v8::String> property, const v8::PropertyCallbackInfo<v8::Value>& info) {
+void Variable::GetFillValue(const v8::FunctionCallbackInfo<v8::Value>& info) {
     v8::Isolate* isolate = info.GetIsolate();
-    Variable* obj = node::ObjectWrap::Unwrap<Variable>(info.Holder());
+    Variable* obj = node::ObjectWrap::Unwrap<Variable>(info.This());
     v8::Local<v8::Value> result;
     int retval;
     switch (obj->type) {
@@ -938,15 +960,16 @@ void Variable::GetFillValue(v8::Local<v8::String> property, const v8::PropertyCa
     info.GetReturnValue().Set(result);
 }
 
-void Variable::SetFillValue(v8::Local<v8::String> property, v8::Local<v8::Value> val, const v8::PropertyCallbackInfo<void>& info) {
+void Variable::SetFillValue(const v8::FunctionCallbackInfo<v8::Value>& info) {
     v8::Isolate* isolate = info.GetIsolate();
-    Variable* obj = node::ObjectWrap::Unwrap<Variable>(info.Holder());
+    Variable* obj = node::ObjectWrap::Unwrap<Variable>(info.This());
     int mode;
     int retval = nc_inq_var_fill(obj->parent_id, obj->id, &mode, NULL);
     if (retval != NC_NOERR) {
         throw_netcdf_error(isolate, retval);
         return;
     }
+    v8::Local<v8::Value> val = info[0];
     switch (obj->type) {
         case NC_BYTE:
         case NC_CHAR: {
@@ -990,9 +1013,9 @@ void Variable::SetFillValue(v8::Local<v8::String> property, v8::Local<v8::Value>
     }
 }
 
-void Variable::GetCompressionShuffle(v8::Local<v8::String> property, const v8::PropertyCallbackInfo<v8::Value>& info) {
+void Variable::GetCompressionShuffle(const v8::FunctionCallbackInfo<v8::Value>& info) {
     v8::Isolate* isolate = info.GetIsolate();
-    Variable* obj = node::ObjectWrap::Unwrap<Variable>(info.Holder());
+    Variable* obj = node::ObjectWrap::Unwrap<Variable>(info.This());
     int v;
     int retval = nc_inq_var_deflate(obj->parent_id, obj->id, &v, NULL, NULL);
     if (retval != NC_NOERR) {
@@ -1002,9 +1025,10 @@ void Variable::GetCompressionShuffle(v8::Local<v8::String> property, const v8::P
     info.GetReturnValue().Set(v8::Boolean::New(isolate, v == 1));
 }
 
-void Variable::SetCompressionShuffle(v8::Local<v8::String> property, v8::Local<v8::Value> val, const v8::PropertyCallbackInfo<void>& info) {
+void Variable::SetCompressionShuffle(const v8::FunctionCallbackInfo<v8::Value>& info) {
     v8::Isolate* isolate = info.GetIsolate();
-    Variable* obj = node::ObjectWrap::Unwrap<Variable>(info.Holder());
+    Variable* obj = node::ObjectWrap::Unwrap<Variable>(info.This());
+    v8::Local<v8::Value> val = info[0];
     if (!val->IsBoolean()) {
         isolate->ThrowException(v8::Exception::TypeError(v8::String::NewFromUtf8(isolate, "Expecting a boolean", v8::NewStringType::kNormal).ToLocalChecked()));
         return;
@@ -1026,9 +1050,9 @@ void Variable::SetCompressionShuffle(v8::Local<v8::String> property, v8::Local<v
     }
 }
 
-void Variable::GetCompressionDeflate(v8::Local<v8::String> property, const v8::PropertyCallbackInfo<v8::Value>& info) {
+void Variable::GetCompressionDeflate(const v8::FunctionCallbackInfo<v8::Value>& info) {
     v8::Isolate* isolate = info.GetIsolate();
-    Variable* obj = node::ObjectWrap::Unwrap<Variable>(info.Holder());
+    Variable* obj = node::ObjectWrap::Unwrap<Variable>(info.This());
     int v;
     int retval = nc_inq_var_deflate(obj->parent_id, obj->id, NULL, &v, NULL);
     if (retval != NC_NOERR) {
@@ -1038,9 +1062,10 @@ void Variable::GetCompressionDeflate(v8::Local<v8::String> property, const v8::P
     info.GetReturnValue().Set(v8::Boolean::New(isolate, v == 1));
 }
 
-void Variable::SetCompressionDeflate(v8::Local<v8::String> property, v8::Local<v8::Value> val, const v8::PropertyCallbackInfo<void>& info) {
+void Variable::SetCompressionDeflate(const v8::FunctionCallbackInfo<v8::Value>& info) {
     v8::Isolate* isolate = info.GetIsolate();
-    Variable* obj = node::ObjectWrap::Unwrap<Variable>(info.Holder());
+    Variable* obj = node::ObjectWrap::Unwrap<Variable>(info.This());
+    v8::Local<v8::Value> val = info[0];
     if (!val->IsBoolean()) {
         isolate->ThrowException(v8::Exception::TypeError(v8::String::NewFromUtf8(isolate, "Expecting a boolean", v8::NewStringType::kNormal).ToLocalChecked()));
         return;
@@ -1062,9 +1087,9 @@ void Variable::SetCompressionDeflate(v8::Local<v8::String> property, v8::Local<v
     }
 }
 
-void Variable::GetCompressionLevel(v8::Local<v8::String> property, const v8::PropertyCallbackInfo<v8::Value>& info) {
+void Variable::GetCompressionLevel(const v8::FunctionCallbackInfo<v8::Value>& info) {
     v8::Isolate* isolate = info.GetIsolate();
-    Variable* obj = node::ObjectWrap::Unwrap<Variable>(info.Holder());
+    Variable* obj = node::ObjectWrap::Unwrap<Variable>(info.This());
     int v;
     int retval = nc_inq_var_deflate(obj->parent_id, obj->id, NULL, NULL, &v);
     if (retval != NC_NOERR) {
@@ -1074,9 +1099,10 @@ void Variable::GetCompressionLevel(v8::Local<v8::String> property, const v8::Pro
     info.GetReturnValue().Set(v8::Integer::New(isolate, v));
 }
 
-void Variable::SetCompressionLevel(v8::Local<v8::String> property, v8::Local<v8::Value> val, const v8::PropertyCallbackInfo<void>& info) {
+void Variable::SetCompressionLevel(const v8::FunctionCallbackInfo<v8::Value>& info) {
     v8::Isolate* isolate = info.GetIsolate();
-    Variable* obj = node::ObjectWrap::Unwrap<Variable>(info.Holder());
+    Variable* obj = node::ObjectWrap::Unwrap<Variable>(info.This());
+    v8::Local<v8::Value> val = info[0];
     if (!val->IsUint32()) {
         isolate->ThrowException(v8::Exception::TypeError(v8::String::NewFromUtf8(isolate, "Expecting a non-negative integer", v8::NewStringType::kNormal).ToLocalChecked()));
         return;

@@ -1,4 +1,11 @@
-build/
+build/.vs/
+build/*.user
+build/Release/*
+!build/Release/netcdf4.node
+!build/Release/netcdf4.pdb
+build/Debug/*
+!build/Debug/netcdf4.node
+!build/Debug/netcdf4.pdb
 node_modules/
 *.log
 GPATH

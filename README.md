@@ -1,4 +1,43 @@
-# netcdf4-js
+# netcdf4-js for Node.JS 24.x (mod)
+
+Convenient package to use netcdf4 addon in Node.JS 24.x in Windows OS.
+
+## Developer Notes
+Bindings (*.cpp) have been updated to Node.JS 24.x's API.
+
+* Built using:
+  * Visual Studio 2022
+  * netCDF v4.9.3 (2023-03-14)
+* Dependencies are in `deps` folder.
+  * `netCDF` is an installation of netCDF (v4.9.3; 2023-03-14) from [unidata](https://downloads.unidata.ucar.edu/netcdf/).
+  * `nodejs` contains Node.JS (v24.4.1) header/library files and was pulled by node-gyp.
+  * `node-gyp`
+* Outputs:
+  * build/Release/netcdf4.node
+  * build/Debug/netcdf4.node
+
+### Wishlist
+Simpler APIs. E.g.:
+* Return single dimension directly as number, or multiple dimensions as array of numbers.
+```js
+const netcdf4 = require("netcdf4");
+const data = new netcdf4.File("test/testrh.nc", "r");
+//Instead of:
+//const max = data.variables.var1.dimensions[0].length; //returns 10000
+//Simply:
+const max = data.variables.var1.max; //returns 10000
+
+//For 2D:
+const max2d = data.variables.var2d.max; //returns [10, 20]
+/*
+where:
+    data.variables.var2d.dimensions.length = 2
+    data.variables.var2d.dimensions[0].length = 10
+    data.variables.var2d.dimensions[1].length = 20
+*/
+```
+
+# netcdf4-js (original readme)
 
 ![Build status](https://github.com/parro-it/netcdf4/workflows/Node.js%20CI/badge.svg?branch=master)
 [![NPM Version](https://img.shields.io/npm/v/netcdf4.svg)](https://npmjs.org/package/netcdf4)

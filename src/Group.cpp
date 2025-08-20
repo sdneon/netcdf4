@@ -25,14 +25,24 @@ void Group::Init(v8::Local<v8::Object> exports) {
     NODE_SET_PROTOTYPE_METHOD(tpl, "addSubgroup", Group::AddSubgroup);
     NODE_SET_PROTOTYPE_METHOD(tpl, "addAttribute", Group::AddAttribute);
     NODE_SET_PROTOTYPE_METHOD(tpl, "inspect", Group::Inspect);
-    tpl->InstanceTemplate()->SetAccessor(v8::String::NewFromUtf8(isolate, "id", v8::NewStringType::kNormal).ToLocalChecked(), Group::GetId);
-    tpl->InstanceTemplate()->SetAccessor(v8::String::NewFromUtf8(isolate, "variables", v8::NewStringType::kNormal).ToLocalChecked(), Group::GetVariables);
-    tpl->InstanceTemplate()->SetAccessor(v8::String::NewFromUtf8(isolate, "dimensions", v8::NewStringType::kNormal).ToLocalChecked(), Group::GetDimensions);
-    tpl->InstanceTemplate()->SetAccessor(v8::String::NewFromUtf8(isolate, "unlimited", v8::NewStringType::kNormal).ToLocalChecked(), Group::GetUnlimited);
-    tpl->InstanceTemplate()->SetAccessor(v8::String::NewFromUtf8(isolate, "attributes", v8::NewStringType::kNormal).ToLocalChecked(), Group::GetAttributes);
-    tpl->InstanceTemplate()->SetAccessor(v8::String::NewFromUtf8(isolate, "subgroups", v8::NewStringType::kNormal).ToLocalChecked(), Group::GetSubgroups);
-    tpl->InstanceTemplate()->SetAccessor(v8::String::NewFromUtf8(isolate, "name", v8::NewStringType::kNormal).ToLocalChecked(), Group::GetName);
-    tpl->InstanceTemplate()->SetAccessor(v8::String::NewFromUtf8(isolate, "fullname", v8::NewStringType::kNormal).ToLocalChecked(), Group::GetFullname);
+
+    FN_GETTER(Group, Id)
+    FN_GETTER(Group, Variables)
+    FN_GETTER(Group, Dimensions)
+    FN_GETTER(Group, Unlimited)
+    FN_GETTER(Group, Attributes)
+    FN_GETTER(Group, Subgroups)
+    FN_GETTER(Group, Name)
+    FN_GETTER(Group, Fullname)
+
+    tpl->InstanceTemplate()->SetAccessorProperty(v8::String::NewFromUtf8(isolate, "id", v8::NewStringType::kNormal).ToLocalChecked(),getter_Id);
+    tpl->InstanceTemplate()->SetAccessorProperty(v8::String::NewFromUtf8(isolate, "variables", v8::NewStringType::kNormal).ToLocalChecked(), getter_Variables);
+    tpl->InstanceTemplate()->SetAccessorProperty(v8::String::NewFromUtf8(isolate, "dimensions", v8::NewStringType::kNormal).ToLocalChecked(), getter_Dimensions);
+    tpl->InstanceTemplate()->SetAccessorProperty(v8::String::NewFromUtf8(isolate, "unlimited", v8::NewStringType::kNormal).ToLocalChecked(), getter_Unlimited);
+    tpl->InstanceTemplate()->SetAccessorProperty(v8::String::NewFromUtf8(isolate, "attributes", v8::NewStringType::kNormal).ToLocalChecked(), getter_Attributes);
+    tpl->InstanceTemplate()->SetAccessorProperty(v8::String::NewFromUtf8(isolate, "subgroups", v8::NewStringType::kNormal).ToLocalChecked(), getter_Subgroups);
+    tpl->InstanceTemplate()->SetAccessorProperty(v8::String::NewFromUtf8(isolate, "name", v8::NewStringType::kNormal).ToLocalChecked(), getter_Name);
+    tpl->InstanceTemplate()->SetAccessorProperty(v8::String::NewFromUtf8(isolate, "fullname", v8::NewStringType::kNormal).ToLocalChecked(), getter_Fullname);
     constructor.Reset(isolate, tpl->GetFunction(isolate->GetCurrentContext()).ToLocalChecked());
 }
 
@@ -47,7 +57,7 @@ bool Group::get_name(char* name) const {
 
 void Group::AddAttribute(const v8::FunctionCallbackInfo<v8::Value>& args) {
     v8::Isolate* isolate = args.GetIsolate();
-    Group* obj = node::ObjectWrap::Unwrap<Group>(args.Holder());
+    Group* obj = node::ObjectWrap::Unwrap<Group>(args.This());
     if (args.Length() < 3) {
         isolate->ThrowException(v8::Exception::TypeError(v8::String::NewFromUtf8(isolate, "Wrong number of arguments", v8::NewStringType::kNormal).ToLocalChecked()));
         return;
@@ -74,7 +84,7 @@ void Group::AddAttribute(const v8::FunctionCallbackInfo<v8::Value>& args) {
 
 void Group::AddSubgroup(const v8::FunctionCallbackInfo<v8::Value>& args) {
     v8::Isolate* isolate = args.GetIsolate();
-    Group* obj = node::ObjectWrap::Unwrap<Group>(args.Holder());
+    Group* obj = node::ObjectWrap::Unwrap<Group>(args.This());
     if (args.Length() < 1) {
         isolate->ThrowException(v8::Exception::TypeError(v8::String::NewFromUtf8(isolate, "Wrong number of arguments", v8::NewStringType::kNormal).ToLocalChecked()));
         return;
@@ -97,7 +107,7 @@ void Group::AddSubgroup(const v8::FunctionCallbackInfo<v8::Value>& args) {
 
 void Group::AddDimension(const v8::FunctionCallbackInfo<v8::Value>& args) {
     v8::Isolate* isolate = args.GetIsolate();
-    Group* obj = node::ObjectWrap::Unwrap<Group>(args.Holder());
+    Group* obj = node::ObjectWrap::Unwrap<Group>(args.This());
     if (args.Length() < 2) {
         isolate->ThrowException(v8::Exception::TypeError(v8::String::NewFromUtf8(isolate, "Wrong number of arguments", v8::NewStringType::kNormal).ToLocalChecked()));
         return;
@@ -135,7 +145,7 @@ void Group::AddDimension(const v8::FunctionCallbackInfo<v8::Value>& args) {
 
 void Group::AddVariable(const v8::FunctionCallbackInfo<v8::Value>& args) {
     v8::Isolate* isolate = args.GetIsolate();
-    Group* obj = node::ObjectWrap::Unwrap<Group>(args.Holder());
+    Group* obj = node::ObjectWrap::Unwrap<Group>(args.This());
     if (args.Length() < 3) {
         isolate->ThrowException(v8::Exception::TypeError(v8::String::NewFromUtf8(isolate, "Wrong number of arguments", v8::NewStringType::kNormal).ToLocalChecked()));
         return;
@@ -182,15 +192,15 @@ void Group::AddVariable(const v8::FunctionCallbackInfo<v8::Value>& args) {
     delete[] dimids;
 }
 
-void Group::GetId(v8::Local<v8::String> property, const v8::PropertyCallbackInfo<v8::Value>& info) {
+void Group::GetId(const v8::FunctionCallbackInfo<v8::Value>& info) {
     v8::Isolate* isolate = info.GetIsolate();
-    Group* obj = node::ObjectWrap::Unwrap<Group>(info.Holder());
+    Group* obj = node::ObjectWrap::Unwrap<Group>(info.This());
     info.GetReturnValue().Set(v8::Integer::New(isolate, obj->id));
 }
 
-void Group::GetVariables(v8::Local<v8::String> property, const v8::PropertyCallbackInfo<v8::Value>& info) {
+void Group::GetVariables(const v8::FunctionCallbackInfo<v8::Value>& info) {
     v8::Isolate* isolate = info.GetIsolate();
-    Group* obj = node::ObjectWrap::Unwrap<Group>(info.Holder());
+    Group* obj = node::ObjectWrap::Unwrap<Group>(info.This());
     int nvars;
     int retval = nc_inq_varids(obj->id, &nvars, NULL);
     if (retval != NC_NOERR) {
@@ -219,9 +229,9 @@ void Group::GetVariables(v8::Local<v8::String> property, const v8::PropertyCallb
     delete[] var_ids;
 }
 
-void Group::GetDimensions(v8::Local<v8::String> property, const v8::PropertyCallbackInfo<v8::Value>& info) {
+void Group::GetDimensions(const v8::FunctionCallbackInfo<v8::Value>& info) {
     v8::Isolate* isolate = info.GetIsolate();
-    Group* obj = node::ObjectWrap::Unwrap<Group>(info.Holder());
+    Group* obj = node::ObjectWrap::Unwrap<Group>(info.This());
     int ndims;
     int retval = nc_inq_dimids(obj->id, &ndims, NULL, 0);
     if (retval != NC_NOERR) {
@@ -250,9 +260,9 @@ void Group::GetDimensions(v8::Local<v8::String> property, const v8::PropertyCall
     delete[] dim_ids;
 }
 
-void Group::GetUnlimited(v8::Local<v8::String> property, const v8::PropertyCallbackInfo<v8::Value>& info) {
+void Group::GetUnlimited(const v8::FunctionCallbackInfo<v8::Value>& info) {
     v8::Isolate* isolate = info.GetIsolate();
-    Group* obj = node::ObjectWrap::Unwrap<Group>(info.Holder());
+    Group* obj = node::ObjectWrap::Unwrap<Group>(info.This());
     int ndims;
     int retval = nc_inq_unlimdims(obj->id, &ndims, NULL);
     if (retval != NC_NOERR) {
@@ -281,9 +291,9 @@ void Group::GetUnlimited(v8::Local<v8::String> property, const v8::PropertyCallb
     delete[] dim_ids;
 }
 
-void Group::GetAttributes(v8::Local<v8::String> property, const v8::PropertyCallbackInfo<v8::Value>& info) {
+void Group::GetAttributes(const v8::FunctionCallbackInfo<v8::Value>& info) {
     v8::Isolate* isolate = info.GetIsolate();
-    Group* obj = node::ObjectWrap::Unwrap<Group>(info.Holder());
+    Group* obj = node::ObjectWrap::Unwrap<Group>(info.This());
     int natts;
     int retval = nc_inq_natts(obj->id, &natts);
     if (retval != NC_NOERR) {
@@ -304,9 +314,9 @@ void Group::GetAttributes(v8::Local<v8::String> property, const v8::PropertyCall
     info.GetReturnValue().Set(result);
 }
 
-void Group::GetSubgroups(v8::Local<v8::String> property, const v8::PropertyCallbackInfo<v8::Value>& info) {
+void Group::GetSubgroups(const v8::FunctionCallbackInfo<v8::Value>& info) {
     v8::Isolate* isolate = info.GetIsolate();
-    Group* obj = node::ObjectWrap::Unwrap<Group>(info.Holder());
+    Group* obj = node::ObjectWrap::Unwrap<Group>(info.This());
     int ngrps;
     int retval = nc_inq_grps(obj->id, &ngrps, NULL);
     if (retval != NC_NOERR) {
@@ -335,18 +345,18 @@ void Group::GetSubgroups(v8::Local<v8::String> property, const v8::PropertyCallb
     delete[] grp_ids;
 }
 
-void Group::GetName(v8::Local<v8::String> property, const v8::PropertyCallbackInfo<v8::Value>& info) {
+void Group::GetName(const v8::FunctionCallbackInfo<v8::Value>& info) {
     v8::Isolate* isolate = info.GetIsolate();
-    Group* obj = node::ObjectWrap::Unwrap<Group>(info.Holder());
+    Group* obj = node::ObjectWrap::Unwrap<Group>(info.This());
     char name[NC_MAX_NAME + 1];
     if (obj->get_name(name)) {
         info.GetReturnValue().Set(v8::String::NewFromUtf8(isolate, name, v8::NewStringType::kNormal).ToLocalChecked());
     }
 }
 
-void Group::GetFullname(v8::Local<v8::String> property, const v8::PropertyCallbackInfo<v8::Value>& info) {
+void Group::GetFullname(const v8::FunctionCallbackInfo<v8::Value>& info) {
     v8::Isolate* isolate = info.GetIsolate();
-    Group* obj = node::ObjectWrap::Unwrap<Group>(info.Holder());
+    Group* obj = node::ObjectWrap::Unwrap<Group>(info.This());
     size_t len;
     int retval = nc_inq_grpname_len(obj->id, &len);
     if (retval != NC_NOERR) {

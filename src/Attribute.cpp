@@ -3,6 +3,7 @@
 #include <netcdf.h>
 #include <iostream>
 #include "netcdf4js.h"
+#include "Dimension.h"
 
 namespace netcdf4js {
 
@@ -31,20 +32,23 @@ void Attribute::Init(v8::Local<v8::Object> exports) {
     tpl->InstanceTemplate()->SetInternalFieldCount(1);
     NODE_SET_PROTOTYPE_METHOD(tpl, "delete", Attribute::Delete);
     NODE_SET_PROTOTYPE_METHOD(tpl, "inspect", Attribute::Inspect);
-    tpl->InstanceTemplate()->SetAccessor(v8::String::NewFromUtf8(isolate, "name", v8::NewStringType::kNormal).ToLocalChecked(), Attribute::GetName, Attribute::SetName);
-    tpl->InstanceTemplate()->SetAccessor(v8::String::NewFromUtf8(isolate, "value", v8::NewStringType::kNormal).ToLocalChecked(), Attribute::GetValue, Attribute::SetValue);
+    FN_GETTER_AND_SETTER(Attribute, Name)
+    FN_GETTER_AND_SETTER(Attribute, Value)
+    tpl->InstanceTemplate()->SetAccessorProperty(v8::String::NewFromUtf8(isolate, "name", v8::NewStringType::kNormal).ToLocalChecked(), getter_Name, setter_Name);
+    tpl->InstanceTemplate()->SetAccessorProperty(v8::String::NewFromUtf8(isolate, "value", v8::NewStringType::kNormal).ToLocalChecked(), getter_Value, setter_Value);
     constructor.Reset(isolate, tpl->GetFunction(isolate->GetCurrentContext()).ToLocalChecked());
 }
 
-void Attribute::GetName(v8::Local<v8::String> property, const v8::PropertyCallbackInfo<v8::Value>& info) {
+void Attribute::GetName(const v8::FunctionCallbackInfo<v8::Value>& info) {
     v8::Isolate* isolate = info.GetIsolate();
-    Attribute* obj = node::ObjectWrap::Unwrap<Attribute>(info.Holder());
+    Attribute* obj = node::ObjectWrap::Unwrap<Attribute>(info.This());
     info.GetReturnValue().Set(v8::String::NewFromUtf8(isolate, obj->name.c_str(), v8::NewStringType::kNormal).ToLocalChecked());
 }
 
-void Attribute::SetName(v8::Local<v8::String> property, v8::Local<v8::Value> val, const v8::PropertyCallbackInfo<void>& info) {
+void Attribute::SetName(const v8::FunctionCallbackInfo<v8::Value>& info) {
     v8::Isolate* isolate = v8::Isolate::GetCurrent();
-    Attribute* obj = node::ObjectWrap::Unwrap<Attribute>(info.Holder());
+    Attribute* obj = node::ObjectWrap::Unwrap<Attribute>(info.This());
+    v8::Local<v8::Value> val = info[0];
     v8::String::Utf8Value new_name_(
 #if NODE_MAJOR_VERSION >= 8
         isolate,
@@ -58,9 +62,9 @@ void Attribute::SetName(v8::Local<v8::String> property, v8::Local<v8::Value> val
     obj->name = *new_name_;
 }
 
-void Attribute::GetValue(v8::Local<v8::String> property, const v8::PropertyCallbackInfo<v8::Value>& info) {
+void Attribute::GetValue(const v8::FunctionCallbackInfo<v8::Value>& info) {
     v8::Isolate* isolate = info.GetIsolate();
-    Attribute* obj = node::ObjectWrap::Unwrap<Attribute>(info.Holder());
+    Attribute* obj = node::ObjectWrap::Unwrap<Attribute>(info.This());
 
     if ((obj->type < NC_BYTE || obj->type > NC_UINT64) && obj->type != NC_STRING) {
         isolate->ThrowException(v8::Exception::TypeError(v8::String::NewFromUtf8(isolate, "Variable type not supported yet", v8::NewStringType::kNormal).ToLocalChecked()));
@@ -81,7 +85,7 @@ void Attribute::GetValue(v8::Local<v8::String> property, const v8::PropertyCallb
             if (len == 1) {
                 info.GetReturnValue().Set(v8::Integer::New(isolate, v[0]));
             } else {
-                info.GetReturnValue().Set(v8::Int8Array::New(v8::ArrayBuffer::New(isolate, v, len * 1), 0, len));
+                info.GetReturnValue().Set(v8::Int8Array::New(v8::ArrayBuffer::New(isolate, 1), 0, len));
             }
             delete[] v;
         } break;
@@ -91,7 +95,7 @@ void Attribute::GetValue(v8::Local<v8::String> property, const v8::PropertyCallb
             if (len == 1) {
                 info.GetReturnValue().Set(v8::Integer::New(isolate, v[0]));
             } else {
-                info.GetReturnValue().Set(v8::Int16Array::New(v8::ArrayBuffer::New(isolate, v, len * 2), 0, len));
+                info.GetReturnValue().Set(v8::Int16Array::New(v8::ArrayBuffer::New(isolate, 1), 0, len));
             }
             delete[] v;
         } break;
@@ -101,7 +105,7 @@ void Attribute::GetValue(v8::Local<v8::String> property, const v8::PropertyCallb
             if (len == 1) {
                 info.GetReturnValue().Set(v8::Integer::New(isolate, v[0]));
             } else {
-                info.GetReturnValue().Set(v8::Int32Array::New(v8::ArrayBuffer::New(isolate, v, len * 4), 0, len));
+                info.GetReturnValue().Set(v8::Int32Array::New(v8::ArrayBuffer::New(isolate, 1), 0, len));
             }
             delete[] v;
         } break;
@@ -111,7 +115,7 @@ void Attribute::GetValue(v8::Local<v8::String> property, const v8::PropertyCallb
             if (len == 1) {
                 info.GetReturnValue().Set(v8::Number::New(isolate, v[0]));
             } else {
-                info.GetReturnValue().Set(v8::Float32Array::New(v8::ArrayBuffer::New(isolate, v, len * 4), 0, len));
+                info.GetReturnValue().Set(v8::Float32Array::New(v8::ArrayBuffer::New(isolate, 1), 0, len));
             }
             delete[] v;
         } break;
@@ -121,7 +125,7 @@ void Attribute::GetValue(v8::Local<v8::String> property, const v8::PropertyCallb
             if (len == 1) {
                 info.GetReturnValue().Set(v8::Number::New(isolate, v[0]));
             } else {
-                info.GetReturnValue().Set(v8::Float64Array::New(v8::ArrayBuffer::New(isolate, v, len * 8), 0, len));
+                info.GetReturnValue().Set(v8::Float64Array::New(v8::ArrayBuffer::New(isolate, 1), 0, len));
             }
             delete[] v;
         } break;
@@ -131,7 +135,7 @@ void Attribute::GetValue(v8::Local<v8::String> property, const v8::PropertyCallb
             if (len == 1) {
                 info.GetReturnValue().Set(v8::Integer::New(isolate, v[0]));
             } else {
-                info.GetReturnValue().Set(v8::Uint8Array::New(v8::ArrayBuffer::New(isolate, v, len * 1), 0, len));
+                info.GetReturnValue().Set(v8::Uint8Array::New(v8::ArrayBuffer::New(isolate, 1), 0, len));
             }
             delete[] v;
         } break;
@@ -141,7 +145,7 @@ void Attribute::GetValue(v8::Local<v8::String> property, const v8::PropertyCallb
             if (len == 1) {
                 info.GetReturnValue().Set(v8::Integer::New(isolate, v[0]));
             } else {
-                info.GetReturnValue().Set(v8::Uint16Array::New(v8::ArrayBuffer::New(isolate, v, len * 2), 0, len));
+                info.GetReturnValue().Set(v8::Uint16Array::New(v8::ArrayBuffer::New(isolate, 1), 0, len));
             }
             delete[] v;
         } break;
@@ -151,7 +155,7 @@ void Attribute::GetValue(v8::Local<v8::String> property, const v8::PropertyCallb
             if (len == 1) {
                 info.GetReturnValue().Set(v8::Integer::NewFromUnsigned(isolate, v[0]));
             } else {
-                info.GetReturnValue().Set(v8::Uint32Array::New(v8::ArrayBuffer::New(isolate, v, len * 4), 0, len));
+                info.GetReturnValue().Set(v8::Uint32Array::New(v8::ArrayBuffer::New(isolate, 1), 0, len));
             }
             delete[] v;
         } break;
@@ -161,7 +165,7 @@ void Attribute::GetValue(v8::Local<v8::String> property, const v8::PropertyCallb
             if (len == 1) {
                 info.GetReturnValue().Set(v8::Integer::New(isolate, static_cast<int32_t>(v[0])));
             } else {
-                info.GetReturnValue().Set(v8::Int32Array::New(v8::ArrayBuffer::New(isolate, v, len * 8), 0, len));
+                info.GetReturnValue().Set(v8::Int32Array::New(v8::ArrayBuffer::New(isolate, 1), 0, len));
             }
             delete[] v;
         } break;
@@ -171,7 +175,7 @@ void Attribute::GetValue(v8::Local<v8::String> property, const v8::PropertyCallb
             if (len == 1) {
                 info.GetReturnValue().Set(v8::Integer::NewFromUnsigned(isolate, static_cast<uint32_t>(v[0])));
             } else {
-                info.GetReturnValue().Set(v8::Uint32Array::New(v8::ArrayBuffer::New(isolate, v, len * 8), 0, len));
+                info.GetReturnValue().Set(v8::Uint32Array::New(v8::ArrayBuffer::New(isolate, 1), 0, len));
             }
             delete[] v;
         } break;
@@ -189,8 +193,9 @@ void Attribute::GetValue(v8::Local<v8::String> property, const v8::PropertyCallb
     }
 }
 
-void Attribute::SetValue(v8::Local<v8::String> property, v8::Local<v8::Value> val, const v8::PropertyCallbackInfo<void>& info) {
-    Attribute* obj = node::ObjectWrap::Unwrap<Attribute>(info.Holder());
+void Attribute::SetValue(const v8::FunctionCallbackInfo<v8::Value>& info) {
+    Attribute* obj = node::ObjectWrap::Unwrap<Attribute>(info.This());
+    v8::Local<v8::Value> val = info[0];
     obj->set_value(val);
 }
 
@@ -225,7 +230,7 @@ void Attribute::set_value(const v8::Local<v8::Value>& val) {
 }
 
 void Attribute::Delete(const v8::FunctionCallbackInfo<v8::Value>& args) {
-    Attribute* obj = node::ObjectWrap::Unwrap<Attribute>(args.Holder());
+    Attribute* obj = node::ObjectWrap::Unwrap<Attribute>(args.This());
     int retval = nc_del_att(obj->parent_id, obj->var_id, obj->name.c_str());
     if (retval != NC_NOERR) {
         throw_netcdf_error(args.GetIsolate(), retval);
