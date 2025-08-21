@@ -2,6 +2,27 @@
 
 Convenient package to use netcdf4 addon in Node.JS 24.x in Windows OS.
 
+### New API
+New APIs for ease of use.
+* Return single dimension directly as number, or multiple dimensions as array of numbers.
+  ```js
+    const netcdf4 = require("netcdf4");
+    const data = new netcdf4.File("test/testrh.nc", "r");
+    //Instead of:
+    //const max = data.variables.var1.dimensions[0].length; //returns 10000
+    //Simply:
+    const max = data.variables.var1.dims; //returns 10000
+    
+    //For 2D (not in testrh.nc; sample code only):
+    const max2d = data.variables.var2d.dims; //returns [10, 20]
+    /*
+    where:
+        data.variables.var2d.dimensions.length = 2
+        data.variables.var2d.dimensions[0].length = 10
+        data.variables.var2d.dimensions[1].length = 20
+    */
+  ```
+
 ## Developer Notes
 Bindings (*.cpp) have been updated to Node.JS 24.x's API.
 
@@ -17,25 +38,7 @@ Bindings (*.cpp) have been updated to Node.JS 24.x's API.
   * build/Debug/netcdf4.node
 
 ### Wishlist
-Simpler APIs. E.g.:
-* Return single dimension directly as number, or multiple dimensions as array of numbers.
-```js
-const netcdf4 = require("netcdf4");
-const data = new netcdf4.File("test/testrh.nc", "r");
-//Instead of:
-//const max = data.variables.var1.dimensions[0].length; //returns 10000
-//Simply:
-const max = data.variables.var1.max; //returns 10000
-
-//For 2D:
-const max2d = data.variables.var2d.max; //returns [10, 20]
-/*
-where:
-    data.variables.var2d.dimensions.length = 2
-    data.variables.var2d.dimensions[0].length = 10
-    data.variables.var2d.dimensions[1].length = 20
-*/
-```
+Simpler APIs.
 
 # netcdf4-js (original readme)
 

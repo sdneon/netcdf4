@@ -61,6 +61,7 @@ void Variable::Init(v8::Local<v8::Object> exports) {
     FN_GETTER(Variable, Id)
     FN_GETTER(Variable, Type)
     FN_GETTER(Variable, Dimensions)
+    FN_GETTER(Variable, Dims)
     FN_GETTER(Variable, Attributes)
     FN_GETTER_AND_SETTER(Variable, Name)
     FN_GETTER_AND_SETTER(Variable, Endianness)
@@ -76,6 +77,7 @@ void Variable::Init(v8::Local<v8::Object> exports) {
     tpl->InstanceTemplate()->SetAccessorProperty(v8::String::NewFromUtf8(isolate, "id", v8::NewStringType::kNormal).ToLocalChecked(), getter_Id);
     tpl->InstanceTemplate()->SetAccessorProperty(v8::String::NewFromUtf8(isolate, "type", v8::NewStringType::kNormal).ToLocalChecked(), getter_Type);
     tpl->InstanceTemplate()->SetAccessorProperty(v8::String::NewFromUtf8(isolate, "dimensions", v8::NewStringType::kNormal).ToLocalChecked(), getter_Dimensions);
+    tpl->InstanceTemplate()->SetAccessorProperty(v8::String::NewFromUtf8(isolate, "dims", v8::NewStringType::kNormal).ToLocalChecked(), getter_Dims);
     tpl->InstanceTemplate()->SetAccessorProperty(v8::String::NewFromUtf8(isolate, "attributes", v8::NewStringType::kNormal).ToLocalChecked(), getter_Attributes);
     tpl->InstanceTemplate()->SetAccessorProperty(v8::String::NewFromUtf8(isolate, "name", v8::NewStringType::kNormal).ToLocalChecked(), getter_Name, setter_Name);
     tpl->InstanceTemplate()->SetAccessorProperty(v8::String::NewFromUtf8(isolate, "endianness", v8::NewStringType::kNormal).ToLocalChecked(), getter_Endianness, setter_Endianness);
@@ -576,6 +578,37 @@ void Variable::GetDimensions(const v8::FunctionCallbackInfo<v8::Value>& info) {
     for (int i = 0; i < obj->ndims; i++) {
         Dimension* d = new Dimension(dim_ids[i], obj->parent_id);
         result->Set(isolate->GetCurrentContext(), i, d->handle());
+    }
+    info.GetReturnValue().Set(result);
+    delete[] dim_ids;
+}
+
+/*
+* Retrieve the actual lengths of all dimensions.
+* @retval (int or array of int) For single dimension, returns the length itself;
+*                               For multiple dimensions, returns lengths in an array.
+*/
+void Variable::GetDims(const v8::FunctionCallbackInfo<v8::Value>& info) {
+    v8::Isolate* isolate = info.GetIsolate();
+    Variable* obj = node::ObjectWrap::Unwrap<Variable>(info.This());
+    int* dim_ids = new int[obj->ndims];
+    int retval = nc_inq_vardimid(obj->parent_id, obj->id, dim_ids);
+    if (retval != NC_NOERR) {
+        throw_netcdf_error(isolate, retval);
+        delete[] dim_ids;
+        return;
+    }
+    if (obj->ndims == 1)
+    {
+        info.GetReturnValue().Set(v8::Integer::New(isolate, obj->ndims));
+        return;
+    }
+    v8::Local<v8::Context> ctx = isolate->GetCurrentContext();
+    v8::Local<v8::Array> result = v8::Array::New(isolate);
+    size_t len;
+    for (int i = 0; i < obj->ndims; i++) {
+        Dimension* d = new Dimension(dim_ids[i], obj->parent_id);
+        result->Set(ctx, i, v8::Integer::New(isolate, d->getLen()));
     }
     info.GetReturnValue().Set(result);
     delete[] dim_ids;

@@ -24,6 +24,7 @@ class Variable : public node::ObjectWrap {
     static void GetId(const v8::FunctionCallbackInfo<v8::Value>&);
     static void GetType(const v8::FunctionCallbackInfo<v8::Value>&);
     static void GetDimensions(const v8::FunctionCallbackInfo<v8::Value>&);
+    static void GetDims(const v8::FunctionCallbackInfo<v8::Value>& info);
     static void GetAttributes(const v8::FunctionCallbackInfo<v8::Value>&);
     static void GetName(const v8::FunctionCallbackInfo<v8::Value>&);
     static void SetName(const v8::FunctionCallbackInfo<v8::Value>&);

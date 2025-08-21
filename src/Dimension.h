@@ -21,6 +21,7 @@ class Dimension : public node::ObjectWrap {
     static void Init(v8::Local<v8::Object> exports);
     Dimension(const int& id_, const int& parent_id_);
     bool get_name(char* name) const;
+    size_t getLen();
 
   private:
     static v8::Persistent<v8::Function> constructor;

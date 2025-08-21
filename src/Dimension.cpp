@@ -44,6 +44,17 @@ void Dimension::GetId(const v8::FunctionCallbackInfo<v8::Value>& info) {
     info.GetReturnValue().Set(v8::Integer::New(isolate, obj->id));
 }
 
+size_t Dimension::getLen()
+{
+    size_t len;
+    int retval = nc_inq_dimlen(this->parent_id, this->id, &len);
+    if (retval != NC_NOERR) {
+        throw_netcdf_error(v8::Isolate::GetCurrent(), retval);
+        return -1;
+    }
+    return len;
+}
+
 void Dimension::GetLength(const v8::FunctionCallbackInfo<v8::Value>& info) {
     v8::Isolate* isolate = info.GetIsolate();
     Dimension* obj = node::ObjectWrap::Unwrap<Dimension>(info.This());
