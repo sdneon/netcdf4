@@ -4,7 +4,7 @@ Convenient package to use netcdf4 addon in Node.JS 24.x in Windows OS.
 
 ### New API
 New APIs for ease of use.
-* Return single dimension directly as number, or multiple dimensions as array of numbers.
+* **`Variable.dims`** - Return single dimension directly as number, or multiple dimensions as array of numbers.
   ```js
     const netcdf4 = require("netcdf4");
     const data = new netcdf4.File("test/testrh.nc", "r");
@@ -23,6 +23,25 @@ New APIs for ease of use.
     */
   ```
 
+* **`Variable.readL`**(rootVar, keys, optDesiredDimIndex) - Get associated value(s) for given keys (dimension values).
+  * For 1D data, `keys` should be simply the value in that single dimension (exact or next lower value is matched), and its corresponding data value is returned.
+  * For multi-dimensional data, `keys` should be an array of all respective values in all dimensions. The single corresponding data value is returned.
+    * Optional `optDesiredDimIndex`: If specified, indicates that you wish to rerieve the entire set of data values for all values of this index dimension. (Corresponding value in `keys` will be ignored). Array of this slice of data is returned.
+  ```js
+    //1D:
+    const temperatureAtNoon = data.read(noon);
+    
+    //4D single value:
+    const airDensityAtPointAtNoon = data.read([noon, latitude, longitube, altitude]);
+    
+    //4D slice of values:
+    const airDensityAtPointFor24hrs = data.read([ignored, latitude, longitube, altitude], 0);
+  ```
+  * Similarly for **`Variable.readH`** and **`Variable.readM`**.
+    * `readH` gets 'rounds up' to the next higher value in the dimensions instead.
+    * `readM` gets the average between readL & readH results.
+      * Simple interpolation could have been done for 1D data, but the focus here is on multi-dimensional data, so  asimpel averaging is used instead of some complex interpolation.
+  
 ## Developer Notes
 Bindings (*.cpp) have been updated to Node.JS 24.x's API.
 
