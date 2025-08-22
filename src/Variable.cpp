@@ -92,6 +92,7 @@ void Variable::Init(v8::Local<v8::Object> exports) {
         setter_CompressionDeflate);
     tpl->InstanceTemplate()->SetAccessorProperty(v8::String::NewFromUtf8(isolate, "compressionlevel", v8::NewStringType::kNormal).ToLocalChecked(), getter_CompressionLevel, setter_CompressionLevel);
     constructor.Reset(isolate, tpl->GetFunction(isolate->GetCurrentContext()).ToLocalChecked());
+    exports->Set(isolate->GetCurrentContext(), v8::String::NewFromUtf8(isolate, "Variable", v8::NewStringType::kNormal).ToLocalChecked(), tpl->GetFunction(isolate->GetCurrentContext()).ToLocalChecked());
 }
 
 bool Variable::get_name(char* name) const {
@@ -600,7 +601,8 @@ void Variable::GetDims(const v8::FunctionCallbackInfo<v8::Value>& info) {
     }
     if (obj->ndims == 1)
     {
-        info.GetReturnValue().Set(v8::Integer::New(isolate, obj->ndims));
+        Dimension* d = new Dimension(dim_ids[0], obj->parent_id);
+        info.GetReturnValue().Set(v8::Integer::New(isolate, d->getLen()));
         return;
     }
     v8::Local<v8::Context> ctx = isolate->GetCurrentContext();
